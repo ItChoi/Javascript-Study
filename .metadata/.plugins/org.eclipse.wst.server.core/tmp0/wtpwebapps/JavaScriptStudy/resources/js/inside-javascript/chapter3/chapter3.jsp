@@ -193,7 +193,8 @@ console.log("===================================================================
 	console.dir("emptyObj.__proto__::: ", emptyObj.__proto__);
 	
 	
-// 배열의 프로퍼티 동적 생성	
+// 배열의 프로퍼티 동적 생성
+	console.log("===================================배열의 프로퍼티 동적 생성====================================");
 	var arr = ['zero', 'one', 'two'];
 	console.log("arr.length::: ", arr.length);
 	
@@ -210,7 +211,10 @@ console.log("===================================================================
 // splice(start, deleteCount, item...) 메서드
 	var arr1 = ['zero', 'one', 'two', 'three'];
 	
+	delete arr1[2];
 	console.log("arr1.length1::: ", arr1.length);
+	
+	
 	arr1.splice(2, 1);
 	console.log("arr1::: ", arr1);
 	console.log("arr1.length2::: ", arr1.length);
@@ -218,6 +222,7 @@ console.log("===================================================================
 	
 // 유사 배열 객체
 	var arr = ['bar'];
+	
 	var obj = {
 		name : 'foo',
 		length : 1
@@ -227,6 +232,8 @@ console.log("===================================================================
 	console.log("arr::: ", arr);
 	
 	// obj.push('bazzzz');
+	
+	
 	Array.prototype.push.apply(obj, ['baz']);
 	console.log("obj:::", obj);
 	

@@ -40,8 +40,18 @@ console.log("test2:: ", add.result);
 console.log("test3:: ", add.status);
 console.dir(add); */
 
-function add(x, y) { return x + y; }
-console.dir(add);
+/* function add(x, y) { return x + y; }
+console.dir(add); */
+
+/* function myFunction() {
+	return true;
+}
+console.dir(myFunction.prototype);
+console.dir(myFunction.prototype.constructor); */
+
+(function(name) {
+	console.log(name + '은 바보다.');
+})('foo');
 
 </script>
 

@@ -49,9 +49,41 @@ console.dir(add); */
 console.dir(myFunction.prototype);
 console.dir(myFunction.prototype.constructor); */
 
-(function(name) {
+/* (function(name) {
 	console.log(name + '은 바보다.');
-})('foo');
+})('foo'); */
+
+/* function parent() {
+	var a = 100;
+	var b = 200;
+	
+	function child() {
+		var b = 300;
+		
+		console.log(a);
+		console.log(b);
+	}
+	child();
+}	
+parent(); */
+
+/* var self = function() {
+	console.log('a');
+	return function() {
+		console.log('b');
+	}
+}
+self = self();
+self(); */
+
+function add(a, b) {
+	console.dir(arguments);
+	return a + b;
+}
+console.dir(add);
+console.log(add(1));
+console.log(add(1, 2));
+console.log(add(1, 2, 3));
 
 </script>
 

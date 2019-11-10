@@ -212,9 +212,207 @@
 			console.log(name + '은 바보다.');
 		})('foo');
 	- 즉시 실행 함수 실행 방법
-		1. 함수 리터럴을 ()로 감싼다.
+		1. 함수c 리터럴을 ()로 감싼다.
 		2. 함수가 바로 실행 가능하게 ()를 추가하고, 괄호 안에 인자를 넣어줄 수 있다.
 	- 함수가 선언되자마자 실행되게 만들어 다시 호출할 수 없다. 이러한 특징을 이용해 최초 한 번의 실행을 필요로 하는 초기화 코드
+	- 최싱 jQuery 소스를 확인하면 소스 코드 전체가 즉시 실행 함수로 감싸져 있다. 이렇게 즉시 실행 함수를 사용하는 이유는
+	JS의 변수 유효 범위 특성 때문이다. JS는 함수 유효 범위를 지원한다. 기본적으로 JS는 변수를 선언할 경우 프로그램 전체에서 
+	접근할 수 있는 전역 유효 범위를 가지게 된다. 그러나 함수 내부에서 정의된 매개변수와 변수들은 함수 코드 내부에서만 유효하다.
+	여기서 변수들은 var문을 사용해서 정의해야 한다. 그렇지 않으면 함수 내의 변수라도 전역 유효 범위를 갖게 된다.
 	
+##### 4.3.3 내부 함수
+	- 함수 내부에 정의된 함수를 내부 함수라고 한다. 이는 클로저를 생성하거나 부모 함수 코드에서 외부의 접근을 막고 독립적인 헬퍼 함수를 구현하는 용도 등으로 사용된다.
+	ex)
+		function parent() {
+			var a = 100;
+			var b = 200;
+			
+			function child() {
+				var b = 300;
+				
+				console.log(a);
+				console.log(b);
+			}
+			child();
+		}	
+		parent(); // a = 100, b = 300
+		child(); // uncaught RefereneError 발생
+	해설)
+		child 내부 하무는 부모에서 정의된 변수를 사용할 수 있다. b 같은 경우 child에 정의된 변수를 사용하게 된다.
+		이것이 가능한 이유는 JS의 스코프 체이닝 때문이다. (5장에서 자세히 살펴봄)
+		- 함수 스코핑: 함수 내부에 선언된 변수는 함수 외부에서 접근이 불가능하다.
+		- 부모 함수에서 내부 함수를 외부로 리턴하면 부모 함수 밖에서도 내부 함수를 호출하는 것이 가능하다.
+		ex)
+			function parent() {
+				var a = 100;
+				var child = function() {
+					console.log(a);
+				}
+				return child;
+			}	
+			var inner = parent();
+			inner();
+		해설)
+			이와 같이 실행이 끝난 parent() 함수 스코프의 변수를  참조하는 inner()와 같은 함수를 클로저라고 한다.
+
+##### 4.3.4 함수를 리턴하는 함수
+	ex)
+		var self = function() {
+			console.log('a');
+			return function() {
+				console.log('b');
+			}
+		}
+		self = self();
+		self();
+	해설)
+		변수 self에 self()함수를 넣을 때 a 메시지가 찍히고, 리턴된 값이 self에 담긴다 그리고 self()호출 시 b만 찍힌다.
+			
+##### 4.4 함수 호출과 this
+	
+##### 4.4.1 arguments 객체
+	- JS는 함수 호출 시 함수 인자 개수에 맞게 인자를 넘기지 않더라구 에러가 발생하지 않는다. 덜 넣으면 undefined, 더 넣으면 무시
+	- 이러한 특성 때문에 함수 코드 작성 시, 런타임 시에 호출된 인자의 개수를 확인하고 이에 따라 동작을 다륵 해줘야 할 경우가 있다.
+	이를 가능하게 하는 것이 바로 arguments 객체다.
+	- JS는 함수 호출 시 인수들과 함께 암묵적으로 arguments 객체가 함수 내부로 전달된다. arguments 객체는 함수를 호출할 때
+	넘긴 인자들이 배열 형태로 저장된 객체를 의미한다. 이 객체는 실제 배열이 아닌 유사 배열 객체다.
+	ex)
+		function add(a, b) {
+			console.dir(arguments);
+			return a + b;
+		}
+		console.dir(add);
+		console.log(add(1)); // NaN
+		console.log(add(1, 2)); // 3 
+		console.log(add(1, 2, 3)); // 3
+	해설)
+		arguments 객체는 매개 변수 개수가 정확히 정해지지 않은 함수를 구현하거나, 전달된 인자의 개수에 따라 서로 다른 처리를 해야할 때 유용하다.
+		
+##### 4.4.2 호출 패턴과 this 바인딩
+	- JS는 함수 호출 시 인자값과 arguments객체 및 this 인자가 함수 내부로 암묵적으로 전달된다.
+	- this는 함수 호출 방식에 따라 this가 다른 객체를 참조한다. (this 바인딩)
+
+##### 4.4.2.1 객체의 메서드 호출할 때 this 바인딩
+	- 객체의 프로퍼티가 함수일 경우 이 함수를 메서드라 부른다. 메서드 내부 코드에서 사용된 this는 해당 메서드를 호출한 객체로 바인딩된다.
+	- 밑에 예제에서는 this가 각각 myObject, otherObject가 된다. (객체 프로퍼티가 함수일 경우)
+	ex)
+		var myObject = {
+			name: 'foo',
+			sayName: function() {
+				console.log(this.name);
+			}
+		};
+		var otherObject = {
+			name: 'bar'
+		};
+		otherObject.sayName = myObject.sayName;
+		
+		myObject.sayName();
+		otherObject.sayName();
+
+##### 4.4.2.2 함수를 호출할 때 this 바인딩
+	- JS에서는 함수 호출 시 해당 함수 내부 코드에서 사용된 this는 전역 객체에 바인딩된다.
+	브라우저에서 JS를 실행하는 경우 전역 객체는 window 객체가 된다.
+	
+	- 전역 객체란 무엇인가?? (브라우저, Node.js)
+		- 브라우저 환경에서 JS 실행하는 경우 전역 객체는 window 객체가 된다.
+		- Node.js와 같은 JS 언어를 통해 서버 프로그래밍을 할 수 있게끔 해주는 JS 런타임 환경에서의 전역 객체는 global 객체가 된다.
+		Node.js는 JS 개발자에게 브라우저 기반의 프로그래밍을 넘어 서버 기반 프로그래밍 영역까지 개발을 가능하게끔 해주는 플랫폼이다.
+		- JS의 모든 전역 변수는 실제로 이 전역 객체의 프로퍼티들이다.
+		ex)
+			var foo = "I'm foo";
+			console.log(foo);
+			console.log(window.foo);
+			console.log(this.foo);
+		
+		ex)
+			var test = 'This is test';
+			console.log(window.test);
+			var sayFoo = function() {
+				console.log(this.test);
+			}
+			sayFoo();
+	
+		- 이러한 함수 호출에서의 this 바인딩 특성은 내부 함수를 호출했을 경우에도 그대로 적용되므로 내부 함수에서 this를 이용할 때 주의해야 한다.
+		ex)
+			var value = 100;
+			
+			var myObject = {
+				value: 1,
+				func1: function() {
+					this.value += 1;
+					console.log('func1() called. this.value : ' + this.value);
+					func2 = function() {
+						this.value += 1;
+						console.log('func2() called. this.value : ' + this.value);
+						
+						func3 = function() {
+							this.value += 1;
+							console.log('func3() called. this.value : ' + this.value);
+						}
+						func3();
+					}
+					func2();
+				}
+			};
+			myObject.func1();
+		해설)
+			1. func1에서 this.value += 1은 this가 myObject를 가르킨다. value: 2
+			2. func2와 func3에서 this는 window를 가르키게 된다. value: 101, 102
+			- this의 실행결과가 다르게 나온 것은, JS에서는 내부 함수 호출 패턴을 정의해 놓지 않기 때문이다.
+			내부 함수도 결국 함수이므로 this는 전역 객체에 바인딩된다. 따라서 func2, func3에서 func1의
+			this를 사용하고자 할 경우 다른 변수에 this를 담아서 사용해야 한다. var that = this;
+			
+			- JS에서는 이와 같은 this 바인딩의 한계를 극복하고 this 바인딩을 명시적으로 할 수 있도록 call과 apply 메서드를 제공한다.
+			게다가 jQuery, underscore.js 등과 같은 JS 라이브러리들의 경우 bind 메서드를 통해 사용자가 원하는 this에 바인딩 할 수 있다.(7장에서 소개)
+			
+##### 4.4.2.3 생성자 함수를 호출할 때 this 바인딩
+	- JS 객체를 생성하는 방법은 크게 객체 리터럴 방식과 생성자 함수를 이용하는 두 가지 방법이 있다.
+	- JS에서 생성자 함수는 기존 함수에 new 연산자를 붙여 호출하면  생성자 함수로 동작하며 함수 이름의 첫 문자를 대문자로 쓰기를 권장하고 있다.
+	- JS에서는 생성자 함수를 호출할 때, 생성자 함수 코드 내부에서 this를 이해하려면 생성자 함수 호출 시 동작 방식을 살펴봐야 한다.
+		- 생성자 함수 동장 방식 (p 110 참조)
+			1. 빈 객체 생성 및 this 바인딩
+			2. this를 통한 프로퍼티 생성
+			3. 생성된 객체 리턴
+	ex) 
+		var Person = function(name) {
+			this.name = name;
+		};
+		var foo = new Person('foo');
+		console.log(foo.name);
+	해설)
+		1. Person() 함수가 생성자로 호출되면 함수 코드가 실행되기 전 빈 객체가 생성된다.
+		2. 빈 객체는 Person() 생성자 함수의 prototype 프로퍼티가 가르 키는 객체(Person.prototype객체)를 [[Prototype]]
+		링크로 연결해서 자신의 프로토 타입을 설정한다.
+		3. 생성된 객체는 생성자 함수 코드에서 사용되는 this로 바인딩된다. 
+		4. this가 가리키는 빈 객체에 name이라는 동적 프로퍼티를 생성했다. 
+
+	ex) 객체 생성 두 가지 방법(객체 리터럴, 생성자 함수)
+		var foo = {
+			name: 'foo',
+			age: 35,
+			gender: 'man'
+		};			
+		console.dir(foo);
+		
+		function Person(name, age, gender, position) {
+			this.name = name;
+			this.age = age;
+			this.gender = gender;
+		}
+		var bar = new Person('bar', 33, 'woman');
+		console.dir(bar);
+		var baz = new Person('bar', 25, 'man');
+		console.dir(baz);
+		TODO:::: p.112
+		
+		
+		
+			
+			
+			
+			
+	
+		
 	
 	

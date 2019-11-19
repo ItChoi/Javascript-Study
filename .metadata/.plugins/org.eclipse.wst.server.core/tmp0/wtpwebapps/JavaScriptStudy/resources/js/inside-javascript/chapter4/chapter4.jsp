@@ -76,7 +76,7 @@ parent(); */
 self = self();
 self(); */
 
-function add(a, b) {
+/* function add(a, b) {
 	console.dir(arguments);
 	return a + b;
 }
@@ -84,7 +84,18 @@ console.dir(add);
 console.log(add(1));
 console.log(add(1, 2));
 console.log(add(1, 2, 3));
+ */
+ 
+function Person(name) {
+	this.name = name;	 
+};
 
+var foo = new Person('foo');
+
+console.dir(Person);
+console.dir(foo);
+
+ 
 </script>
 
 

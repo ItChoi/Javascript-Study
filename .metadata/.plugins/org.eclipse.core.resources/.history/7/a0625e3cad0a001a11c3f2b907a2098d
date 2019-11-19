@@ -1,0 +1,103 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>인사이드 자바스크립트 4장 - 함수와 프로토타입 체이닝</title>
+</head>
+<body>
+<!-- 
+페이지 : 80~149(예습)
+
+개인발표준비
+김근경 : 4.2.1 ~ 4.3.1
+김정현 : 4.3.2 ~ 4.4.1
+서연철 : 4.4.2
+장윤희 : 4.4.3 ~ 4.5.3
+최상현 : 4.5.4 ~ 4.5.7
+장정원 : 4.5.8 ~ 5.2.2
+김근희 : 5.2.3 ~ 5.3.2 
+
+-->
+
+
+
+
+<script type="text/javascript">
+/* var add = new Function('x', 'y', 'return x * y');
+console.log(add(3, 4)); // 출력값: 7 */
+
+/* function add(x, y) {
+	return x + y;
+}
+
+add.result = add(3, 2);
+add.status = 'OK';
+
+console.log("test1:: ", add);
+console.log("test2:: ", add.result);
+console.log("test3:: ", add.status);
+console.dir(add); */
+
+/* function add(x, y) { return x + y; }
+console.dir(add); */
+
+/* function myFunction() {
+	return true;
+}
+console.dir(myFunction.prototype);
+console.dir(myFunction.prototype.constructor); */
+
+/* (function(name) {
+	console.log(name + '은 바보다.');
+})('foo'); */
+
+/* function parent() {
+	var a = 100;
+	var b = 200;
+	
+	function child() {
+		var b = 300;
+		
+		console.log(a);
+		console.log(b);
+	}
+	child();
+}	
+parent(); */
+
+/* var self = function() {
+	console.log('a');
+	return function() {
+		console.log('b');
+	}
+}
+self = self();
+self(); */
+
+/* function add(a, b) {
+	console.dir(arguments);
+	return a + b;
+}
+console.dir(add);
+console.log(add(1));
+console.log(add(1, 2));
+console.log(add(1, 2, 3));
+ */
+ 
+var Person = function(name) {
+	this.name = name;	 
+};
+
+console.dir("test1: " + Person.prototype);
+
+var foo = new Person('foo');
+console.dir("test2: " + foo.prototype);
+
+ 
+</script>
+
+
+</body>
+</html>

@@ -112,8 +112,16 @@ var sumObj = {
 var func =   callLater(sumObj, 1, 2);
 setTimeout(func, 500);
 
+// 루프 안 클로저 주의
+function countSeconds(howMany) {
+	for (var i = 1; i <= howMany; i++) {
+		setTimeout(function() {
+			console.log(i);
+		}, i * 1000);
+	}
+}
 
-
+countSeconds(3);
 </script>
 
 

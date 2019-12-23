@@ -52,8 +52,37 @@
       
     - 해설  
     먼저 전역 실행 컨텍스트가 생성되어 활성 객체가 생성되고, outerFunc 함수 호출로 인한 실행 컨텍스트 및 활성 객체가 생성된다. 그리고 innerFunc도 마찬가지로 생성되는데, outerFunc의 실행 컨텍스트가 끝나도 여전히 innerFunc 실행 컨텍스트에서는 scope를 통해 outerFunc의 활성 객체를 참조할 수 있다. 이것이 바로 클로저~ 즉, 이미 생명 주기가 끝난 외부 함수의 변수를 참조하는 함수를 클로저라고 한다. 예제에서는 innerFunc이 클로저다.  
-<br/>    
-   - TODO:: 클로저의 활용...  
+<br/><br/>
     
+    - 클로저의 활용
+      - 클로저는 성능, 자원적인 면에서 약간 손해를 볼 수 있으니 막무가내 사용 자제  
+       
+#### 함수의 캡슐화
+- 전역 변수로 설정하면 여러 함수에서의 접근이 가능하여 값이 의도와는 다르게 변경될 수 있다. 이러한 충돌 가능성을 대비하여 클로저를 활용할 수 있다.
+- 전역 실행 컨텍스트, 실행 컨텍스트의 스코프를 이용하여 즉시 실행 함수에 변수가 할당되어 사용 가능하도록 한다. 스코프에는 [0]전역객체 -> [1]익명함수1 변수객체 -> [2]익명함수2 변수객체
+```javascript
+var getCompletedStr = (function() {
+	var buffAr = [
+		'I am ',
+		'',
+		'. I live in ',
+		'',
+		'. I\'am ',
+		'',
+		' years old.',
+	];
+	
+	return (function(name, city, age) {
+		buffAr[1] = name;
+		buffAr[3] = city;
+		buffAr[5] = age;
+		
+		return buffAr.join('');
+	});
+})();
+
+var str = getCompletedStr('zzoon', 'seoul', 16);
+console.log(str);
+```
     
     
